@@ -118,7 +118,7 @@ namespace Formicae.Components.Geometry
                     outputMesh.Faces.AddFace(faceCounter, faceCounter + 1, faceCounter + 2, faceCounter + 3);
                     faceCounter += 4;
                 }
-                else
+                else { 
                     outputMesh.Faces.AddFace(faceCounter, faceCounter + 1, faceCounter + 2);
                 faceCounter += 3;
             }
