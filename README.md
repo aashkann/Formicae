@@ -38,7 +38,15 @@ You can use Formicae extension id: "b8b53625-9454-4330-8cee-893098f21803" to add
 
 2 - Open ".\Sample\sample.3dm" and load ".\Sample\forma-api.gh" in Grasshopper
 
-3 - Authentificate by pressing the button and there you have it.
+3 - Copy all DLLs from "Dependencies" folder into "Formicae" Grasshopper folder 
+
+4 - In the test Grasshopper script "forma-api.gh":
+
+- Locate the Python node with message "authcontext", and replace set variable "url" to URL of the Forma project where the Formicae extension is installed. This ensures that the correct region ("us" vs "eu") and Project ID are used.
+	
+- Locate the Python node with message "x-ads-region", and set the value to a string consistent with the "url" above - "US" for ".com" and "EMEA" for ".eu".
+
+- Authentificate by pressing the button and there you have it.
 
 
 ## Contribution
