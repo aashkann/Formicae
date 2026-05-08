@@ -83,7 +83,7 @@ namespace Formicae.Helpers.API
 
 
             var contextTask = httplistener.GetContextAsync();
-            CancellationToken cancellationToken;
+            CancellationToken cancellationToken = CancellationToken.None;
             var cancelationTask = Task.Delay(-1, cancellationToken);
 
             await Task.WhenAny(contextTask, cancelationTask).ConfigureAwait(false);

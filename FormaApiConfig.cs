@@ -4,7 +4,7 @@ namespace Formicae
     /// Centralized configuration for Autodesk Forma API endpoints and region support.
     /// Updated to align with Autodesk Platform Services (APS) Forma API v1 (2024-2025).
     /// </summary>
-    static class FormaApiConfig
+    public static class FormaApiConfig
     {
         /// <summary>
         /// Supported Forma data regions.
