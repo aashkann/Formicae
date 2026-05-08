@@ -46,7 +46,43 @@ You can use Formicae extension id: "b8b53625-9454-4330-8cee-893098f21803" to add
 	
 - Locate the Python node with message "x-ads-region", and set the value to a string consistent with the "url" above - "US" for ".com" and "EMEA" for ".eu".
 
+- Set the **Region** input on the `auth` component to `"US"` or `"EU"` to match your Forma project's data region.
+
 - Authentificate by pressing the button and there you have it.
+
+
+## Autodesk Forma API Compatibility Checklist
+
+The following checklist tracks alignment with the latest [Autodesk Platform Services (APS) Forma API](https://aps.autodesk.com/en/docs/forma/v1/) (updated 2024-2025). See [FormaApiConfig.cs](FormaApiConfig.cs) for the centralized endpoint definitions.
+
+### Authentication & Region Support
+- [x] Use APS OAuth v2 (`/authentication/v2/authorize`, `/authentication/v2/token`)
+- [x] Centralize auth base URL in `FormaApiConfig.AuthBaseUrl`
+- [x] Expose `Region` input (`US` / `EU`) on the `auth` Grasshopper component
+- [x] Route `x-ads-region` header correctly via region setting (`US` → `"US"`, EU → `"EMEA"`)
+- [x] Define US and EU Forma API base URLs in `FormaApiConfig` (`developer.api.autodesk.com` / `developer.api.eu.autodesk.com`)
+- [ ] Support token refresh (refresh_token grant) to avoid repeated re-authentication
+
+### Forma Site Design API (v1)
+- [x] Define `/forma/v1/elements` endpoint constant for site elements retrieval
+- [x] Define `/forma/v1/analyses/wind` endpoint constant for wind analysis
+- [ ] Add a dedicated Grasshopper component to GET site elements using the Element API
+- [ ] Add a dedicated Grasshopper component to GET wind analysis results
+
+### Integrate API (Beta) — Import External Geometry into Forma
+- [x] Define `POST /integrate/v1/elements` endpoint constant for creating geometry elements
+- [x] Define `PUT /integrate/v1/elements/{id}` (update) and `POST /integrate/v1/batch/elements` (batch) constants
+- [x] Define `POST /integrate/v1/upload` endpoint constant for signed blob upload (large meshes / GLB)
+- [ ] Add a Grasshopper component to upload Rhino mesh geometry to Forma via the Integrate API
+- [ ] Support GLB-format mesh export from Rhino and upload via signed blob URL
+
+### Extension (Forma Web Platform)
+- [ ] Update the embedded web extension to use `forma-embedded-view-sdk` **>= 0.87.0** (required for new `forma.<region>.autodesk.com` domain scheme introduced in January 2025)
+- [ ] Verify extension compatibility with all supported Forma data regions (US, EU, and new regions)
+
+### General / Code Quality
+- [ ] Migrate HTTP calls from legacy `HttpWebRequest` to `HttpClient` for improved reliability and TLS support
+- [ ] Add `x-ads-region` header automatically in HTTP helper components based on selected region
 
 
 ## Contribution
