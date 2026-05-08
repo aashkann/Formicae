@@ -24,6 +24,8 @@ namespace Formicae.Components.API
         protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
             pManager.AddBooleanParameter("Trigger", "T", "Set to true to start the authentication process.", GH_ParamAccess.item);
+            int regionId = pManager.AddTextParameter("Region", "R", "Data region: \"US\" (default) or \"EU\" (EMEA).", GH_ParamAccess.item, "US");
+            pManager[regionId].Optional = true;
         }
 
         protected override void RegisterOutputParams(GH_OutputParamManager pManager)
@@ -37,12 +39,18 @@ namespace Formicae.Components.API
             if (!DA.GetData(0, ref trigger) || !trigger)
                 return;
 
+            string regionStr = "US";
+            DA.GetData(1, ref regionStr);
+            var region = string.Equals(regionStr, "EU", System.StringComparison.OrdinalIgnoreCase)
+                ? FormaApiConfig.Region.EU
+                : FormaApiConfig.Region.US;
+
             Task.Run(() =>
             {
                 try
                 {
                     // Asynchronously calling GetAccessToken
-                    var accessTokenTask = OAuthHandler.GetAccessToken();
+                    var accessTokenTask = OAuthHandler.GetAccessToken(region);
                     accessTokenTask.Wait(); // This still blocks this thread, but it's a background thread now.
                     var response = accessTokenTask.Result;
 

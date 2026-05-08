@@ -49,7 +49,6 @@ namespace Formicae.Helpers.API
 
         public static string GetAuthorizationUrl(string codeVerifier)
         {
-            //string codeVerifier = GenerateCodeVerifier();
             string codeChallenge = GenerateCodeChallenge(codeVerifier);
 
             var queryParams = new Dictionary<string, string>
@@ -68,10 +67,10 @@ namespace Formicae.Helpers.API
             string queryString = string.Join("&", queryParams
                 .Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
 
-            return $"https://developer.api.autodesk.com/authentication/v2/authorize?{queryString}";
+            return $"{FormaApiConfig.AuthBaseUrl}{FormaApiConfig.AuthorizePath}?{queryString}";
         }
 
-        public static async Task<string> GetAccessToken()
+        public static async Task<string> GetAccessToken(FormaApiConfig.Region region = FormaApiConfig.Region.US)
         {
             string codeVerifier = GenerateCodeVerifier();
             string url = GetAuthorizationUrl(codeVerifier);
@@ -111,7 +110,7 @@ namespace Formicae.Helpers.API
             using (var client = new HttpClient())
             {
                 // Set the base address for HTTP requests
-                client.BaseAddress = new Uri("https://developer.api.autodesk.com");
+                client.BaseAddress = new Uri(FormaApiConfig.AuthBaseUrl);
 
                 // Add accept header for JSON format.
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -131,7 +130,7 @@ namespace Formicae.Helpers.API
                 HttpContent content = new FormUrlEncodedContent(postData);
 
                 // Send a POST request
-                HttpResponseMessage tokenResponse = await client.PostAsync("/authentication/v2/token", content);
+                HttpResponseMessage tokenResponse = await client.PostAsync(FormaApiConfig.TokenPath, content);
 
                 // Ensure we received a successful response.
                 tokenResponse.EnsureSuccessStatusCode();
